@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Sıla ♥ Kaan – Bizim Sayfamız</title>
+  <meta name="description" content="Sıla ve Kaan'a özel; hikayemiz, zaman sayacı, galeri, hayaller ve kitaplar. Viteska kırmızı teması + mobil uyum." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <style>
+    :root{
+      --color-primary:#d61f2b;          /* ana kırmızı */
+      --color-primary-600:#b81b25;      /* koyu kırmızı */
+      --color-primary-200:#ffd5d8;      /* açık kırmızı vurgu */
+      --color-bg:#fff; --color-muted:#7a7a80; --radius:16px;
+      --shadow:0 8px 24px rgba(23,23,28,.08);
+      --menu-width:78vw; --slide-gap:12px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--color-bg);color:#222;font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+
+    /* ====== TOPBAR ====== */
+    .topbar{position:fixed;inset:0 0 auto 0;height:64px;background:var(--color-primary);z-index:900;box-shadow:0 2px 18px rgba(214,31,43,.10)}
+    .topbar-inner{height:64px;padding:0 14px;display:flex;align-items:center}
+    .logo-text{color:#fff;font-weight:800;letter-spacing:.54px;text-shadow:0 2px 6px rgba(0,0,0,.25)}
+    .topbar-spacer{flex:1}
+    .menu-btn{width:44px;height:44px;border:none;border-radius:11px;background:#fff;color:var(--color-primary);display:flex;align-items:center;justify-content:center;font-size:1.25rem;cursor:pointer;box-shadow:0 2px 7px rgba(214,31,43,.10);}
+    .topbar-icon-btn{width:40px;height:40px;background:none;border:none;color:#fff;font-size:1.2rem;border-radius:8px;cursor:pointer;margin-right:6px}
+
+    /* ====== Sağdan MENÜ (sadece şarkılar) ====== */
+    .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:1500;opacity:0;pointer-events:none;transition:opacity .26s}
+    .menu-overlay.active{opacity:1;pointer-events:auto}
+    .side-menu{position:fixed;top:0;right:-500px;width:var(--menu-width);max-width:460px;height:100vh;background:#fff;color:#181818;z-index:1600;box-shadow:-4px 0 28px rgba(0,0,0,.18);transition:right .33s cubic-bezier(.7,0,.2,1);overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding:18px}
+    .side-menu.active{right:0}
+    .side-menu::-webkit-scrollbar{display:none}
+    .menu-title{font-weight:800;margin:0 0 10px 0;color:#1a1a1a}
+    .songs li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed #f4c7cf}
+    .songs li:last-child{border-bottom:none}
+    .songs a{padding:6px 12px;border:2px solid var(--color-primary);border-radius:999px;color:var(--color-primary);font-weight:800}
+
+    /* ====== Ana Gövde ====== */
+    main{max-width:980px;margin:0 auto;padding:80px 16px 70px}
+
+    /* Sayaç – slider üstünde */
+    .counter-wrap{position:relative;margin:0 auto 8px;border-radius:12px;background:#fff0f1;border:1px solid #f4c7cf;box-shadow:0 2px 13px rgba(214,31,43,.08);padding:12px}
+    .counter-title{font-weight:800;text-align:center;color:var(--color-primary);margin:0 0 8px 0}
+    .counter{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+    .pill{flex:0 1 auto;min-width:90px;background:#fff;border:2px solid var(--color-primary);border-radius:10px;padding:8px 10px;text-align:center}
+    .pill b{display:block;font-size:20px;margin-bottom:2px;color:var(--color-primary)}
+
+    /* Hero slider (dotlar kırmızı) */
+    .hero{position:relative;margin:0 auto 16px;border-radius:16px;overflow:hidden;box-shadow:0 2px 13px rgba(214,31,43,.08)}
+    .hero .slides{display:flex;transition:transform .6s cubic-bezier(.35,1,.6,1)}
+    .hero img{display:block;width:100%;height:260px;object-fit:cover}
+    .hero .dots{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:8px}
+    .hero .dot{width:10px;height:10px;border-radius:50%;background:#e6e6e6;box-shadow:0 1px 4px rgba(214,31,43,.15)}
+    .hero .dot.active{background:var(--color-primary);box-shadow:0 2px 8px rgba(214,31,43,.30)}
+
+    /* Slider altı 3 kutu */
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+    .feature{background:#fff;border:1px solid #f4c7cf;border-radius:14px;box-shadow:var(--shadow);padding:14px;text-align:center;display:flex;flex-direction:column;gap:8px}
+    .feature .ic{width:42px;height:42px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;background:#fff0f1;color:var(--color-primary);margin:0 auto}
+    .feature button{height:40px;border:2px solid var(--color-primary);background:#fff;border-radius:10px;color:var(--color-primary);font-weight:800}
+
+    /* Kartlar */
+    .card{background:#fff;border:1px solid #f4c7cf;border-radius:16px;box-shadow:var(--shadow);margin-bottom:16px}
+    .card .hd{padding:14px 16px;border-bottom:1px dashed #f4c7cf;display:flex;align-items:center;gap:10px}
+    .card .hd .icon{width:34px;height:34px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;background:#fff0f1;color:var(--color-primary)}
+    .card .hd h3{margin:0;font-size:16px}
+    .card .bd{padding:16px}
+
+    /* Hikaye (görsel üstte, eskiden yeniye) */
+    .story{display:block;margin-bottom:14px}
+    .story .img{width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;border:1px solid #f4c7cf;margin-bottom:8px}
+    .story .img img{width:100%;height:100%;object-fit:cover;display:block}
+    .story .box{background:#fff7f8;border:1px solid #f4c7cf;border-radius:12px;padding:10px}
+    .story time{display:block;color:var(--color-muted);font-size:12px;margin-bottom:6px}
+
+    /* Galeri – 20 foto */
+    .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .gallery img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;border:1px solid #f4c7cf;cursor:pointer}
+
+    /* ====== TAM EKRAN MODALLAR ====== */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1400;display:none;align-items:center;justify-content:center}
+    .overlay.open{display:flex}
+    .modal{width:100vw;height:100vh;border-radius:0;background:#fff;box-shadow:none;display:flex;flex-direction:column}
+    .modal .mhd{display:flex;align-items:center;justify-content:space-between;padding:14px;background:#fff0f1;border-bottom:1px solid #f4c7cf}
+    .modal .mbd{flex:1;overflow:auto;padding:16px}
+    .close-btn{width:40px;height:40px;border:none;border-radius:10px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.08);cursor:pointer;color:var(--color-primary);font-size:1.1rem}
+
+    /* Görsel büyütme */
+    .zoom{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:1450}
+    .zoom.open{display:flex}
+    .zoom img{max-width:92vw;max-height:88vh;border-radius:12px}
+
+    /* Açılış gösterisi (6sn) */
+    .intro{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:2000;overflow:hidden}
+    .intro .pool{position:absolute;left:0;right:0;bottom:0;height:0;background:var(--color-primary);transition:height 1.2s ease}
+    .intro h1{position:absolute;top:40%;transform:translateY(-50%);font-size:clamp(28px,6vw,52px);color:var(--color-primary);text-shadow:0 4px 14px rgba(214,31,43,.35)}
+    .quote{position:absolute;opacity:0;color:#fff;font-weight:800;font-size:clamp(18px,4.8vw,34px);text-align:center;padding:0 18px}
+    .heart{position:absolute;top:-10vh;font-size:clamp(20px,3.6vw,38px);color:var(--color-primary);opacity:.92;animation:fall linear forwards}
+    @keyframes fall{to{transform:translateY(100vh) rotate(360deg)}}
+
+    /* Sihirli Söz – tam ekran sahne */
+    .magic{position:fixed;inset:0;background:#fff;z-index:1700;display:none;align-items:center;justify-content:center;overflow:hidden}
+    .magic.open{display:flex}
+    .magic .pool{position:absolute;left:0;right:0;bottom:0;height:0;background:var(--color-primary);transition:height 1s ease}
+    .magic .text{position:absolute;opacity:0;color:#fff;font-weight:900;font-size:clamp(20px,6vw,42px);text-align:center;padding:0 18px}
+
+    /* Responsive */
+    @media (max-width:860px){ .features{grid-template-columns:1fr 1fr 1fr} }
+    @media (max-width:720px){ .hero img{height:230px} .gallery{grid-template-columns:repeat(3,1fr)} }
+    @media (max-width:520px){ .features{grid-template-columns:1fr 1fr 1fr} }
+    @media (max-width:480px){ .hero img{height:200px} .gallery{grid-template-columns:repeat(2,1fr)} .pill{min-width:78px} }
+  </style>
+</head>
+<body>
+  <!-- Açılış: 6 sn kalp yağmuru + kırmızı ekran + söz -->
+  <div class="intro" id="intro">
+    <h1>Sıla ♥ Kaan</h1>
+    <div class="pool" id="pool"></div>
+    <div class="quote" id="quote">“Seninle her gün, en sevdiğim gün.”</div>
+  </div>
+
+  <!-- ÜST BAR -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <span class="logo-text">SILA ♥ KAAN</span>
+      <div class="topbar-spacer"></div>
+      <button class="topbar-icon-btn" aria-label="Paylaş" id="shareBtn"><i class="fa-solid fa-share-nodes"></i></button>
+      <button class="menu-btn" id="openMenu" aria-label="Menü"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <!-- Sağ Menü (sadece Şarkılar) -->
+  <div class="menu-overlay" id="menuOverlay"></div>
+  <nav class="side-menu" id="sideMenu">
+    <h3 class="menu-title"><i class="fa-solid fa-music" style="color:var(--color-primary)"></i> Şarkılarımız</h3>
+    <ul class="songs" id="songListMenu">
+      <li><span>Parça #1</span><a href="https://open.spotify.com/" target="_blank" rel="noopener">Çal</a></li>
+      <li><span>Parça #2</span><a href="https://music.youtube.com/" target="_blank" rel="noopener">Çal</a></li>
+      <li><span>Parça #3</span><a href="https://open.spotify.com/" target="_blank" rel="noopener">Çal</a></li>
+    </ul>
+  </nav>
+
+  <!-- Sihirli Söz sahnesi -->
+  <div class="magic" id="magic">
+    <div class="pool" id="magicPool"></div>
+    <div class="text" id="magicText">“Kalbim seninle ritim tutuyor.”</div>
+  </div>
+
+  <!-- Ana içerik -->
+  <main>
+    <!-- Sayaç -->
+    <section class="counter-wrap" aria-label="Beraber geçen zaman">
+      <h3 class="counter-title">Birlikteliğimiz</h3>
+      <div class="counter">
+        <div class="pill"><b id="days">0</b>gün</div>
+        <div class="pill"><b id="hours">0</b>saat</div>
+        <div class="pill"><b id="mins">0</b>dk</div>
+        <div class="pill"><b id="secs">0</b>sn</div>
+      </div>
+    </section>
+
+    <!-- Slider -->
+    <section class="hero" aria-label="Kapak Fotoğrafları">
+      <div class="slides" id="slides">
+        <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1600&auto=format&fit=crop" alt="Sahilde gün batımı"/>
+        <img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?q=80&w=1600&auto=format&fit=crop" alt="Şehirde gece ışıkları"/>
+        <img src="https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=1600&auto=format&fit=crop" alt="Doğada yürüyüş"/>
+      </div>
+      <div class="dots" id="dots"></div>
+    </section>
+
+    <!-- Slider altı 3 kutu -->
+    <section class="features">
+      <div class="feature">
+        <div class="ic"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div><b>Sihirli Söz</b></div>
+        <button id="btnMagic">Bugünün sözü</button>
+      </div>
+      <div class="feature">
+        <div class="ic"><i class="fa-solid fa-stars"></i></div>
+        <div><b>Hayallerimiz</b></div>
+        <button onclick="openModal('dreamsModal')">Görüntüle / Ekle</button>
+      </div>
+      <div class="feature">
+        <div class="ic"><i class="fa-solid fa-book"></i></div>
+        <div><b>Okuduğumuz Kitaplar</b></div>
+        <button onclick="openModal('booksModal')">Görüntüle / Ekle</button>
+      </div>
+    </section>
+
+    <!-- Hikayemiz -->
+    <section id="hikaye" class="card">
+      <div class="hd"><div class="icon"><i class="fa-solid fa-book-heart"></i></div><h3>Hikayemiz</h3></div>
+      <div class="bd" id="storyList">
+        <!-- Eskiden (2024) yeniye (2025) -->
+        <article class="story">
+          <div class="img"><img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1200&auto=format&fit=crop" alt="İlk bakış"></div>
+          <div class="box"><time>2024</time> Bir bakış, bir gülüş… hikaye burada başladı.</div>
+        </article>
+        <article class="story">
+          <div class="img"><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?q=80&w=1200&auto=format&fit=crop" alt="İlk konuşma"></div>
+          <div class="box"><time>2024</time> Saatlerin nasıl geçtiğini anlamadık.</div>
+        </article>
+        <article class="story">
+          <div class="img"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop" alt="İlk buluşma"></div>
+          <div class="box"><time>2025</time> Şehrin kalabalığında sadece biz vardık.</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Galeri (20 foto) -->
+    <section id="galeri" class="card">
+      <div class="hd"><div class="icon"><i class="fa-solid fa-image"></i></div><h3>Galeri</h3></div>
+      <div class="bd">
+        <div class="gallery" id="gallery"></div>
+      </div>
+    </section>
+
+    <!-- Özel Not -->
+    <section id="not" class="card">
+      <div class="hd"><div class="icon"><i class="fa-solid fa-message"></i></div><h3>Özel Not</h3></div>
+      <div class="bd">
+        <textarea id="note" rows="5" placeholder="Kalbinden geçenleri yaz..."></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button id="saveNote">Kaydet</button>
+          <button id="clearNote" style="background:#fff;border:1px solid #f4c7cf">Temizle</button>
+        </div>
+        <p id="noteInfo" style="color:var(--color-muted);margin-top:8px">Notların yalnızca bu cihazda saklanır (localStorage).</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- TAM EKRAN MODAL (genel) -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="mhd">
+        <div id="modalTitle">Başlık</div>
+        <button class="close-btn" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="mbd" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- Görsel büyütme -->
+  <div class="zoom" id="zoom"><img id="zoomImg" alt=""></div>
+
+  <script>
+    /* ==== Açılış gösterisi 6 sn ==== */
+    (function(){
+      const intro=document.getElementById('intro');
+      const pool=document.getElementById('pool');
+      const quote=document.getElementById('quote');
+      const N=60; // kalp sayısı
+      for(let i=0;i<N;i++){
+        const s=document.createElement('i');
+        s.className='fa-solid fa-heart heart';
+        s.style.left=Math.random()*100+'vw';
+        const dur=3+Math.random()*3; // 3-6s arası
+        s.style.animationDuration=dur+'s';
+        s.style.animationDelay=(Math.random()*0.8)+'s';
+        s.addEventListener('animationend',()=>{ const h=Math.min(100, (parseFloat(pool.style.height)||0) + 4); pool.style.height=h+'vh'; });
+        intro.appendChild(s);
+      }
+      setTimeout(()=>{ pool.style.height='100vh'; quote.style.opacity='1'; },6000);
+      setTimeout(()=>{ intro.style.transition='opacity .8s'; intro.style.opacity='0'; setTimeout(()=>intro.remove(),900); },7600);
+    })();
+
+    /* ==== Menü Aç/Kapa ==== */
+    const openMenu=document.getElementById('openMenu');
+    const sideMenu=document.getElementById('sideMenu');
+    const menuOv=document.getElementById('menuOverlay');
+    const openSideMenu=()=>{ sideMenu.classList.add('active'); menuOv.classList.add('active'); };
+    const closeSideMenu=()=>{ sideMenu.classList.remove('active'); menuOv.classList.remove('active'); };
+    openMenu.addEventListener('click',openSideMenu);
+    menuOv.addEventListener('click',closeSideMenu);
+
+    /* ==== Sayaç (1 Ocak 2024) ==== */
+    const startFixed = new Date('2024-01-01T00:00:00');
+    const dEl=document.getElementById('days');
+    const hEl=document.getElementById('hours');
+    const mEl=document.getElementById('mins');
+    const sEl=document.getElementById('secs');
+    function tick(){
+      const diff = Date.now() - startFixed.getTime();
+      const d=Math.max(0, Math.floor(diff/86400000));
+      const h=Math.max(0, Math.floor((diff%86400000)/3600000));
+      const m=Math.max(0, Math.floor((diff%3600000)/60000));
+      const s=Math.max(0, Math.floor((diff%60000)/1000));
+      dEl.textContent=d; hEl.textContent=h; mEl.textContent=m; sEl.textContent=s;
+    }
+    tick(); setInterval(tick,1000);
+
+    /* ==== HERO slider ==== */
+    const slides = document.getElementById('slides');
+    const dotsWrap = document.getElementById('dots');
+    const slideCount = slides.children.length; let idx = 0;
+    for(let i=0;i<slideCount;i++){ const d=document.createElement('div'); d.className='dot'+(i===0?' active':''); d.dataset.i=i; dotsWrap.appendChild(d); d.addEventListener('click',()=>{idx=i;updateSlide()}) }
+    function updateSlide(){ slides.style.transform = `translateX(-${idx*100}%)`; [...dotsWrap.children].forEach((el,i)=>el.classList.toggle('active',i===idx)); }
+    setInterval(()=>{idx=(idx+1)%slideCount;updateSlide()}, 4000);
+
+    /* ==== Genel tam ekran modal ==== */
+    const overlay=document.getElementById('overlay');
+    const modalBody=document.getElementById('modalBody');
+    const modalTitle=document.getElementById('modalTitle');
+    document.getElementById('closeModal').addEventListener('click',()=>overlay.classList.remove('open'));
+    function openModal(which){
+      modalBody.innerHTML='';
+      if(which==='hikayeModal'){
+        modalTitle.textContent='Hikayemiz';
+        modalBody.appendChild(document.getElementById('storyList').cloneNode(true));
+      }else if(which==='galeriModal'){
+        modalTitle.textContent='Galeri';
+        const wrap=document.createElement('div');
+        wrap.appendChild(document.getElementById('gallery').cloneNode(true));
+        modalBody.appendChild(wrap);
+      }else if(which==='notModal'){
+        modalTitle.textContent='Özel Not';
+        const box=document.createElement('div');
+        box.innerHTML=document.getElementById('not').querySelector('.bd').innerHTML;
+        modalBody.appendChild(box);
+      }else if(which==='dreamsModal'){
+        renderDreams();
+      }else if(which==='booksModal'){
+        renderBooks();
+      }
+      overlay.classList.add('open');
+    }
+    window.openModal=openModal;
+
+    /* ==== Sihirli Söz (günde 1 kez) ==== */
+    const magic=document.getElementById('magic');
+    const magicPool=document.getElementById('magicPool');
+    const magicText=document.getElementById('magicText');
+    const btnMagic=document.getElementById('btnMagic');
+    const QUOTES=[
+      '“Sen gülünce içimde bahar açıyor.”',
+      '“Kalbimin her atışı: Sıla & Kaan.”',
+      '“Elimi tuttun, dünya sakinleşti.”',
+      '“Birlikteyken zaman bile kıskanıyor.”'
+    ];
+    function todayKey(){const d=new Date();return d.getFullYear()+('-0'+(d.getMonth()+1)).slice(-2)+('-0'+d.getDate()).slice(-2)}
+    function showMagic(){
+      magicText.textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+      magic.classList.add('open'); magicPool.style.height='0'; magicText.style.opacity='0';
+      // kalpler
+      const N=50; magic.querySelectorAll('.fa-heart').forEach(n=>n.remove());
+      for(let i=0;i<N;i++){ const h=document.createElement('i'); h.className='fa-solid fa-heart heart'; h.style.left=Math.random()*100+'vw'; h.style.animationDuration=(2.5+Math.random()*2.5)+'s'; magic.appendChild(h); h.addEventListener('animationend',()=>{ const hh=Math.min(100, (parseFloat(magicPool.style.height)||0)+4); magicPool.style.height=hh+'vh'; }); }
+      setTimeout(()=>{ magicText.style.opacity='1'; },2600);
+      setTimeout(()=>{ magic.classList.remove('open'); },5200);
+    }
+    btnMagic.addEventListener('click',()=>{
+      const key='magic_'+todayKey();
+      if(localStorage.getItem(key)){
+        alert('Bugünün sihirli sözünü gördünüz ♥ Yarın tekrar gelin.');
+        return;
+      }
+      localStorage.setItem(key,'1');
+      showMagic();
+    });
+
+    /* ==== Hayallerimiz (tam ekran) ==== */
+    const DKEY='dreams_list_v1';
+    function loadDreams(){ try{ return JSON.parse(localStorage.getItem(DKEY)||'[]'); }catch{ return [];} }
+    function saveDreams(arr){ localStorage.setItem(DKEY, JSON.stringify(arr)); }
+    function renderDreams(){
+      const box=document.createElement('div');
+      modalTitle.textContent='Hayallerimiz';
+      box.innerHTML=`<form id="dreamForm" style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:8px;align-items:end;max-width:100%">
+        <label>Kim?<select id="dreamUser" style="width:100%;padding:10px;border:1px solid #f4c7cf;border-radius:10px"><option value="Sıla">Sıla</option><option value="Kaan">Kaan</option></select></label>
+        <label>Hayal<input id="dreamText" type="text" placeholder="Bir hayal..." style="width:100%;padding:10px;border:1px solid #f4c7cf;border-radius:10px"></label>
+        <label>Tarih<input id="dreamDate" type="date" style="width:100%;padding:10px;border:1px solid #f4c7cf;border-radius:10px"></label>
+        <button id="dreamAdd" type="submit" style="height:42px;border:2px solid var(--color-primary);background:#fff;border-radius:10px;color:var(--color-primary);font-weight:800">Ekle</button>
+      </form>
+      <div id="dreamList" style="margin-top:12px;display:grid;gap:10px"></div>`;
+      modalBody.appendChild(box);
+
+      function paint(){
+        const arr=loadDreams().sort((a,b)=> (a.date||'')> (b.date||'')?1:-1);
+        const area=box.querySelector('#dreamList'); area.innerHTML='';
+        arr.forEach((d,i)=>{
+          const el=document.createElement('div');
+          el.style.cssText='border:1px solid #f4c7cf;border-radius:12px;padding:10px;background:#fff7f8;display:flex;gap:10px;justify-content:space-between;align-items:center';
+          el.innerHTML=`<div><b style="color:var(--color-primary)">${d.user}</b> — ${d.text}<div style="color:#777;font-size:12px">${d.date||''}</div></div>
+                         <button data-i="${i}" class="del" style="border:1px solid #f4c7cf;background:#fff;border-radius:8px;padding:6px 10px">Sil</button>`;
+          area.appendChild(el);
+        });
+        area.querySelectorAll('.del').forEach(btn=>btn.addEventListener('click',e=>{ const i=parseInt(e.target.dataset.i); const arr=loadDreams(); arr.splice(i,1); saveDreams(arr); paint(); }));
+      }
+      paint();
+
+      box.querySelector('#dreamForm').addEventListener('submit',e=>{
+        e.preventDefault();
+        const user=box.querySelector('#dreamUser').value;
+        const text=box.querySelector('#dreamText').value.trim();
+        const date=box.querySelector('#dreamDate').value;
+        if(!text) return alert('Bir hayal yaz.');
+        const arr=loadDreams(); arr.push({user:text?user:'', text, date}); saveDreams(arr); e.target.reset(); paint();
+      });
+    }
+
+    /* ==== Okuduğumuz Kitaplar ==== */
+    const BKEY='books_list_v1';
+    function loadBooks(){ try{ return JSON.parse(localStorage.getItem(BKEY)||'[]'); }catch{ return [];} }
+    function saveBooks(arr){ localStorage.setItem(BKEY, JSON.stringify(arr)); }
+    function renderBooks(){
+      const box=document.createElement('div');
+      modalTitle.textContent='Okuduğumuz Kitaplar';
+      box.innerHTML=`<form id="bookForm" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:end">
+        <label style="grid-column:span 1">Kim?<select id="bookUser" style="width:100%;padding:10px;border:1px solid #f4c7cf;border-radius:10px"><option value="Sıla">Sıla</option><option value="Kaan">Kaan</option></select></label>
+        <label style="grid-column:span 2">Kitap<input id="bookTitle" type="text" placeholder="Adı" style="width:100%;padding:10px;border:1px solid #f4c7cf;border-radius:10px"></label>
+        <label style="grid-column:span 2">Yazar<input id="bookAuthor" type="text" placeholder="Yazar" style="width:100%;padding:10px;border:1px solid #f4c7cf;border-radius:10px"></label>
+        <label style="grid-column:span 1">Sayfa<input id="bookPages" type="number" min="1" placeholder="Toplam" style="width:100%;padding:10px;border:1px solid #f4c7cf;border-radius:10px"></label>
+        <label style="grid-column:span 2">Şu an<input id="bookCurrent" type="number" min="0" placeholder="Okunan" style="width:100%;padding:10px;border:1px solid #f4c7cf;border-radius:10px"></label>
+        <label style="grid-column:span 2">Tarih<input id="bookDate" type="date" style="width:100%;padding:10px;border:1px solid #f4c7cf;border-radius:10px"></label>
+        <button id="bookAdd" type="submit" style="grid-column:span 2;height:42px;border:2px solid var(--color-primary);background:#fff;border-radius:10px;color:var(--color-primary);font-weight:800">Ekle</button>
+      </form>
+      <div style="margin:10px 0;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="flt" data-f="all" style="border:2px solid var(--color-primary);background:#fff;border-radius:999px;padding:6px 12px;color:var(--color-primary);font-weight:800">Hepsi</button>
+        <button class="flt" data-f="Sıla" style="border:1px solid #f4c7cf;background:#fff;border-radius:999px;padding:6px 12px">Sıla</button>
+        <button class="flt" data-f="Kaan" style="border:1px solid #f4c7cf;background:#fff;border-radius:999px;padding:6px 12px">Kaan</button>
+      </div>
+      <div id="bookList" style="display:grid;gap:10px"></div>`;
+      modalBody.appendChild(box);
+
+      function paint(filter='all'){
+        const arr=loadBooks();
+        const area=box.querySelector('#bookList'); area.innerHTML='';
+        arr.filter(b=> filter==='all'||b.user===filter).forEach((b,i)=>{
+          const pct=b.pages? Math.min(100, Math.round((b.current||0)/b.pages*100)) : 0;
+          const el=document.createElement('div');
+          el.style.cssText='border:1px solid #f4c7cf;border-radius:12px;padding:10px;background:#fff7f8;display:grid;gap:6px';
+          el.innerHTML=`<div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div><b style="color:var(--color-primary)">${b.user}</b> — <b>${b.title||''}</b> <span style="color:#666">${b.author?('• '+b.author):''}</span></div><button data-i="${i}" class="del" style="border:1px solid #f4c7cf;background:#fff;border-radius:8px;padding:6px 10px">Sil</button></div>
+          <div style="height:10px;border-radius:999px;background:#ffe3e6;overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--color-primary)"></div></div>
+          <div style="color:#777;font-size:12px">${b.current||0}/${b.pages||0} sayfa • ${b.date||''}</div>`;
+          area.appendChild(el);
+        });
+        area.querySelectorAll('.del').forEach(btn=>btn.addEventListener('click',e=>{ const i=parseInt(e.target.dataset.i); const list=loadBooks(); list.splice(i,1); saveBooks(list); paint(filter); }));
+      }
+      paint();
+
+      box.querySelectorAll('.flt').forEach(f=>f.addEventListener('click',()=>{ paint(f.dataset.f); }));
+
+      box.querySelector('#bookForm').addEventListener('submit',e=>{
+        e.preventDefault();
+        const user=box.querySelector('#bookUser').value;
+        const title=box.querySelector('#bookTitle').value.trim();
+        if(!title) return alert('Kitap adı gerekli.');
+        const author=box.querySelector('#bookAuthor').value.trim();
+        const pages=parseInt(box.querySelector('#bookPages').value,10)||0;
+        const current=parseInt(box.querySelector('#bookCurrent').value,10)||0;
+        const date=box.querySelector('#bookDate').value;
+        const arr=loadBooks(); arr.push({user,title,author,pages,current,date}); saveBooks(arr); e.target.reset(); paint();
+      });
+    }
+
+    /* ==== Galeri – 20 foto ==== */
+    const gallery=document.getElementById('gallery');
+    const gallerySources=[
+      'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1520975922284-9bcd0b243b72?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1519744792095-2f2205e87b6f?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1524429656589-6633a470097c?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1520975922284-9bcd0b243b72?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1497250681960-ef046c08a56e?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1550355291-bbee04a92027?q=80&w=1200&auto=format&fit=crop'
+    ].slice(0,20);
+    gallerySources.forEach(src=>{ const im=new Image(); im.src=src; im.alt='Anı'; im.addEventListener('click',()=>{ zoomImg.src=im.src; zoom.classList.add('open'); }); gallery.appendChild(im); });
+
+    /* ==== Özel Not (localStorage) ==== */
+    const note=document.getElementById('note');
+    const save=document.getElementById('saveNote');
+    const clear=document.getElementById('clearNote');
+    const info=document.getElementById('noteInfo');
+    const KEY='silaKaanNote';
+    function loadNote(){ const n=localStorage.getItem(KEY); if(n){ note.value=n; info.textContent='Son notun yüklendi.'; }}
+    loadNote();
+    save.addEventListener('click',()=>{ localStorage.setItem(KEY, note.value); info.textContent='Kaydedildi ✔'; });
+    clear.addEventListener('click',()=>{ localStorage.removeItem(KEY); note.value=''; info.textContent='Temizlendi.'; });
+
+    /* ==== Paylaş ==== */
+    document.getElementById('shareBtn').addEventListener('click', async()=>{
+      if(navigator.share){ try{ await navigator.share({title:'Sıla ♥ Kaan', text:'Bizim sayfamız', url:location.href}); }catch(_){} }
+      else{ alert('Bu sayfanın linkini kopyalayıp paylaşabilirsin: '+location.href); }
+    });
+  </script>
+</body>
+</html>
