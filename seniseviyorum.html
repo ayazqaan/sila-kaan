@@ -23,26 +23,31 @@
     .topbar-spacer{flex:1}
     .menu-btn{width:44px;height:44px;border:none;border-radius:11px;background:#fff;color:var(--color-primary);display:flex;align-items:center;justify-content:center;font-size:1.25rem;cursor:pointer;box-shadow:0 2px 7px rgba(214,31,43,.10);}
 
-    /* SAĞ MENÜ (şarkılar) */
+    /* SAĞ MENÜ (artık şarkı listesi yok) */
     .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:1500;opacity:0;pointer-events:none;transition:opacity .26s}
     .menu-overlay.active{opacity:1;pointer-events:auto}
     .side-menu{position:fixed;top:0;right:-500px;width:var(--menu-width);max-width:460px;height:100vh;background:#fff;color:#181818;z-index:1600;box-shadow:-4px 0 28px rgba(0,0,0,.18);transition:right .33s cubic-bezier(.7,0,.2,1);overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding:18px}
     .side-menu.active{right:0}
     .side-menu::-webkit-scrollbar{display:none}
     .menu-title{font-weight:800;margin:0 0 10px 0;color:#1a1a1a}
-    .songs{list-style:none;margin:0;padding:0}
-    .songs li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed #f4c7cf}
-    .songs li:last-child{border-bottom:none}
-    .songs a{padding:6px 12px;border:2px solid var(--color-primary);border-radius:999px;color:var(--color-primary);font-weight:800}
+    .menu-note{font-size:14px;color:#666;background:#fff7f8;border:1px dashed #f4c7cf;border-radius:12px;padding:10px}
 
-    /* MİNİ OYNATICI */
+    /* MİNİ OYNATICI (menüde görünmez) */
     .player-bar{
       position:fixed;left:50%;transform:translateX(-50%);bottom:12px;z-index:1000;
-      display:none;align-items:center;gap:10px;background:#fff;border:1px solid #f4c7cf;
+      display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #f4c7cf;
       box-shadow:var(--shadow);border-radius:999px;padding:8px 12px;min-width:260px;max-width:92vw;
     }
     .player-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:56vw;font-weight:700;color:#444}
     .player-btn{width:36px;height:36px;border:2px solid var(--color-primary);background:#fff;border-radius:999px;color:var(--color-primary);display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+    /* Sesi Aç bildirimi */
+    .tap-unmute{
+      position:fixed;left:50%;transform:translateX(-50%);bottom:64px;z-index:1001;
+      display:none;align-items:center;gap:8px;background:#fff;border:1px dashed #f4c7cf;
+      border-radius:999px;padding:10px 14px;font-weight:700;color:var(--color-primary);box-shadow:var(--shadow)
+    }
+    .tap-unmute.show{display:flex}
 
     /* ANA GÖVDE */
     main{max-width:980px;margin:0 auto;padding:80px 16px 90px}
@@ -82,35 +87,28 @@
     .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
     .gallery img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;border:1px solid #f4c7cf;cursor:pointer}
 
-    /* === INTRO (kalpler + ortada yazı + alıntı + buton) === */
+    /* === INTRO (kalpler aşağıda birikir + ortada yazı + alıntı) === */
     .intro{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:2000;overflow:hidden}
-    .intro h1{position:absolute;top:38%;transform:translateY(-50%);font-size:clamp(28px,6vw,52px);color:var(--color-primary);text-shadow:0 4px 14px rgba(214,31,43,.35)}
+    .intro h1{position:absolute;top:40%;transform:translateY(-50%);font-size:clamp(28px,6vw,52px);color:var(--color-primary);text-shadow:0 4px 14px rgba(214,31,43,.35)}
     .intro .pool{position:absolute;left:0;right:0;bottom:0;height:0;background:var(--color-primary);transition:height .9s ease}
     .quote{position:absolute;opacity:0;color:#fff;font-weight:800;font-size:32px;line-height:1;text-align:center;padding:0 18px;max-width:92vw;white-space:nowrap;overflow:hidden}
     .heart{position:absolute;top:-10vh;font-size:clamp(20px,3.6vw,38px);color:var(--color-primary);opacity:.92;animation:fall linear forwards}
     @keyframes fall{to{transform:translateY(100vh) rotate(360deg)}}
-    .enter-wrap{position:absolute;bottom:18%;display:flex;justify-content:center;width:100%;opacity:0;pointer-events:none;transition:opacity .35s ease}
-    .enter-btn{display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--color-primary);border:3px solid #fff;border-radius:999px;padding:12px 18px;font-weight:900;font-size:16px;box-shadow:0 10px 28px rgba(0,0,0,.18);cursor:pointer}
-    .enter-btn i{font-size:18px}
-    .enter-wrap.show{opacity:1;pointer-events:auto}
 
-    /* Hikaye görselleri yükseklik sınırı yok */
+    /* Hikaye görselleri sınırları */
     #hikaye .story .img { aspect-ratio:auto !important; height:auto !important; }
     #hikaye .story .img img { width:100%; height:auto !important; object-fit:contain !important; display:block; }
   </style>
 </head>
 <body>
-  <!-- INTRO -->
+  <!-- === GİZLİ ARKA PLAN MÜZİĞİ === -->
+  <audio id="bgm" src="https://static.wixstatic.com/mp3/363c3b_4d36a8c2d89441c3abfaa88b9deb97ac.mp3" preload="auto" loop playsinline></audio>
+
+  <!-- === INTRO === -->
   <div class="intro" id="intro">
     <h1>Sıla ♥ Kaan</h1>
     <div class="pool" id="pool"></div>
     <div class="quote" id="quote">“Yanlış kelimelerle dokundum sana, Affet.”</div>
-    <div class="enter-wrap" id="enterWrap">
-      <button class="enter-btn" id="enterBtn">
-        <i class="fa-solid fa-music"></i>
-        <span>Başla ve Müziği Aç</span>
-      </button>
-    </div>
   </div>
 
   <!-- ÜST BAR -->
@@ -122,36 +120,28 @@
     </div>
   </header>
 
-  <!-- Sağ Menü -->
+  <!-- Sağ Menü (Şarkı listesi YOK) -->
   <div class="menu-overlay" id="menuOverlay"></div>
-  <nav class="side-menu" id="sideMenu" aria-label="Şarkılarımız">
-    <h3 class="menu-title"><i class="fa-solid fa-music" style="color:var(--color-primary)"></i> Şarkılarımız</h3>
-    <ul class="songs" id="songListMenu">
-      <li><span>Şarkı 1</span>
-        <a href="https://music.youtube.com/watch?v=J7iln6HbIW4"
-           data-yt="J7iln6HbIW4" class="play-link">Çal</a>
-      </li>
-      <li><span>Şarkı 2</span><a href="https://music.youtube.com/watch?v=VIDEO_ID_2" data-yt="VIDEO_ID_2" class="play-link">Çal</a></li>
-      <li><span>Şarkı 3</span><a href="https://music.youtube.com/watch?v=VIDEO_ID_3" data-yt="VIDEO_ID_3" class="play-link">Çal</a></li>
-      <li><span>Şarkı 4</span><a href="https://music.youtube.com/watch?v=VIDEO_ID_4" data-yt="VIDEO_ID_4" class="play-link">Çal</a></li>
-      <li><span>Şarkı 5</span><a href="https://music.youtube.com/watch?v=VIDEO_ID_5" data-yt="VIDEO_ID_5" class="play-link">Çal</a></li>
-    </ul>
+  <nav class="side-menu" id="sideMenu" aria-label="Menü">
+    <h3 class="menu-title"><i class="fa-solid fa-heart" style="color:var(--color-primary)"></i> Menü</h3>
+    <div class="menu-note">
+      Burada artık şarkı listesi yok. Arka plan müziği otomatik çalar ve menüde görünmez.
+    </div>
   </nav>
 
-  <!-- Gizli YouTube oynatıcı -->
-  <div style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden">
-    <div id="yt-holder"></div>
+  <!-- Mini oynatıcı (menüden bağımsız) -->
+  <div class="player-bar" id="playerBar" role="group" aria-label="Oynatıcı">
+    <button class="player-btn" id="toggleBtn" aria-label="Oynat/Duraklat"><i class="fa-solid fa-pause"></i></button>
+    <div class="player-title" id="playerTitle">Sıla ♥ Kaan – Parçamız</div>
+    <button class="player-btn" id="muteBtn" aria-label="Sesi Aç/Kapat"><i class="fa-solid fa-volume-high"></i></button>
   </div>
 
-  <!-- Mini oynatıcı -->
-  <div class="player-bar" id="playerBar">
-    <button class="player-btn" id="toggleBtn" aria-label="Oynat/Duraklat"><i class="fa-solid fa-play"></i></button>
-    <div class="player-title" id="playerTitle">Çalıyor...</div>
-    <button class="player-btn" id="muteBtn" aria-label="Sesi Aç/Kapat"><i class="fa-solid fa-volume-xmark"></i></button>
-  </div>
+  <!-- “Sesi Aç” bildirimi -->
+  <div class="tap-unmute" id="tapUnmute"><i class="fa-solid fa-volume-xmark"></i> Sesi açmak için dokun</div>
 
   <!-- Ana içerik -->
   <main>
+    <!-- Sayaç -->
     <section class="counter-wrap" aria-label="Beraber geçen zaman">
       <h3 class="counter-title">Bu Saati Durdurmayalım</h3>
       <div class="counter">
@@ -162,6 +152,7 @@
       </div>
     </section>
 
+    <!-- Slider -->
     <section class="hero" aria-label="Kapak Fotoğrafları">
       <div class="hero-viewport">
         <div class="slides" id="slides">
@@ -173,6 +164,7 @@
       <div class="dots" id="dots"></div>
     </section>
 
+    <!-- Önemli Söz -->
     <section id="not" class="card" aria-label="Not">
       <div class="hd"><div class="icon"><i class="fa-solid fa-quote-left"></i></div><h3></h3></div>
       <div class="bd">
@@ -182,24 +174,155 @@
       </div>
     </section>
 
+    <!-- Hikayemiz -->
     <section id="hikaye" class="card" aria-label="Hikayemiz">
       <div class="hd"><div class="icon"><i class="fa-solid fa-heart"></i></div><h3>Bir Gülüşle Başladı Herşey</h3></div>
       <div class="bd" id="storyList">
+      
         <article class="story">
           <div class="img"><img src="https://pbs.twimg.com/media/G3UGt3gWYAATJxs?format=jpg&name=large" alt="İlk bakış"></div>
-          <div class="box"><time>07.01.2024</time> Bir bakış, bir gülüş… hikaye burada başladı.</div>
+          <div class="box"><time>01.01.2024</time> Belki tesadüftü, belki kaderdi bizi birleştiren ancak ilk gün gibi.. </div>
         </article>
+        
         <article class="story">
-          <div class="img"><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?q=80&w=1200&auto=format&fit=crop" alt="İlk konuşma"></div>
-          <div class="box"><time>2024</time> Saatlerin nasıl geçtiğini anlamadık.</div>
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UYjBWWoAAVDFN?format=jpg&name=large" alt="İlk konuşma"></div>
+          <div class="box"><time>16.01.2024</time>Yan yana yürüdüğümüz her sokak bir ev oldu bize . Çünkü şehir değil seninle yürümek ısıtıyor içimi..</div>
         </article>
+        
         <article class="story">
-          <div .img><img src="https://images.unsplash.com/photo-150530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop" alt="İlk buluşma"></div>
-          <div class="box"><time>2025</time> Şehrin kalabalığında sadece biz vardık.</div>
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UaGGwXEAAs6I1?format=jpg&name=large" alt="İlk buluşma"></div>
+          <div class="box"><time>21.01.2024</time>Yeni ancak bizi mutlu eden birbirimizi tamamlamamız </div>
         </article>
+        
+                <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UdBxwWUAAWb1-?format=jpg&name=4096x4096" alt="İlk buluşma"></div>
+          <div class="box"><time>24.01.2024</time>Kim derdi ki bir avuç jelibon bir hikayenin en güzel başlangıcı olacak ?</div>
+        </article>
+        
+                        <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UfQOmXkAAeQso?format=jpg&name=large" alt="İlk buluşma"></div>
+          <div class="box"><time>28.01.2024</time>Birbirimizi daha iyi anlamaya gittik biz..</div>
+        </article>
+        
+                                <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UfSACXgAAJZ6h?format=jpg&name=900x900" alt="İlk buluşma"></div>
+          <div class="box"><time>28.01.2024</time>Soygunu kalplerimize yaptık..</div>
+        </article>
+        
+                                        <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UfN3-W4AExQ_n?format=jpg&name=small" alt="İlk buluşma"></div>
+          <div class="box"><time>28.01.2024</time>Çünkü huzuru ve güveni bulduk biz koca ankarada..</div>
+        </article>
+        
+                                                <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UgnqUXkAECVTX?format=png&name=small" alt="İlk buluşma"></div>
+          <div class="box"><time>28.01.2024</time>Sonra evimize sessizce..</div>
+        </article>
+        
+                                                <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UgatUXsAACtQY?format=png&name=small" alt="İlk buluşma"></div>
+          <div class="box"><time>23.02.2024</time>Biz düşündük sessizlikte aslında ruh eşi değil ruhların birbirlerine bağlanmış haliyiz..</div>
+        </article>
+        
+                                                        <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UpSAFX0AENnul?format=png&name=900x900" alt="İlk buluşma"></div>
+          <div class="box"><time>01.03.2024</time>Sen Ve Ben..</div>
+        </article>
+        
+                                                                <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UpSAFXoAAvu5l?format=png&name=900x900" alt="İlk buluşma"></div>
+          <div class="box"><time>01.03.2024</time>Aynalarda bizimleydi..</div>
+        </article>
+        
+                                                                        <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UpSABWAAA0JFL?format=png&name=900x900" alt="İlk buluşma"></div>
+          <div class="box"><time>03.03.2024</time>Şikayet etmnek ne haddimize..</div>
+        </article>
+        
+                                                                                <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UpSACWMAAAGuL?format=jpg&name=medium" alt="İlk buluşma"></div>
+          <div class="box"><time>03.03.2024</time>Şükürler olsun her halimize..</div>
+        </article>
+        
+                                                                                        <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3Uqw7jXsAAQnyT?format=png&name=small" alt="İlk buluşma"></div>
+          <div class="box"><time>03.03.2024</time>Effect değil bazı şeyler mesela bunun gerçek olması hep hayalimiz..</div>
+        </article>
+        
+                                                                                                <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3Uqw7hWsAA5Pcz?format=png&name=900x900" alt="İlk buluşma"></div>
+          <div class="box"><time>06.04.2024</time>Ama şöyle bir şey var biz çok güzeliz..</div>
+        </article>
+       
+                 <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3Uqw_pXsAAUcD8?format=png&name=900x900" alt="İlk buluşma"></div>
+          <div class="box"><time>06.04.2024</time>Asiliz bir kere ağır başlıyız..</div>
+        </article>
+       
+                        <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UqxAUWYAASnkZ?format=jpg&name=large" alt="İlk buluşma"></div>
+          <div class="box"><time>09.04.2024</time>Birde doymadığımız bir sevgi ile..</div>
+        </article>
+       
+                               <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UshVZWgAEGyOk?format=png&name=900x900" alt="İlk buluşma"></div>
+          <div class="box"><time>11.04.2024</time>Evden atıldık bana ev oldun..</div>
+        </article>
+       
+                                      <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UshVbWoAEavCj?format=png&name=small" alt="İlk buluşma"></div>
+          <div class="box"><time>11.04.2024</time>Birazda yedin beni tavşan & kelebek..</div>
+        </article>
+        
+           <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UshVYXoAA9PaJ?format=png&name=900x900" alt="İlk buluşma"></div>
+          <div class="box"><time>13.04.2024</time>Sana yaslanarak güç buldum her zamann..</div>
+        </article>
+       
+          <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3UshVaX0AAHuBv?format=png&name=small" alt="İlk buluşma"></div>
+          <div class="box"><time>17.04.2024</time>Sevmek her şeyi yaptırıyordu daha güzel olmamız için :)</div>
+        </article>
+       
+                 <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3Ut52TWgAArRpi?format=jpg&name=medium" alt="İlk buluşma"></div>
+          <div class="box"><time>21.04.2024</time>Sigara sadece Sıladan ayrı Kaana yararlı..</div>
+        </article>
+       
+                        <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3Ut52QXQAAaEmO?format=jpg&name=medium" alt="İlk buluşma"></div>
+          <div class="box"><time>21.04.2024</time>Birbirine Bakarken parlayan gözler gördüm ben..</div>
+        </article>
+       
+                               <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3Ut52UXIAALRE-?format=jpg&name=medium" alt="İlk buluşma"></div>
+          <div class="box"><time>21.04.2024</time>Kediler gibiydik temiz ve saf..</div>
+        </article>
+       
+                                      <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3Uvq1qXYAAj6VV?format=png&name=900x900" alt="İlk buluşma"></div>
+          <div class="box"><time>02.06.2024</time>Gerçekten masum kediler gibi..</div>
+        </article>
+       
+                                             <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3Uvq5-WkAA9R1P?format=png&name=900x900" alt="İlk buluşma"></div>
+          <div class="box"><time>02.06.2024</time>Çok güzeldi be..</div>
+        </article>
+       
+                                                    <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3Uvq1rW4AA3rZF?format=png&name=900x900" alt="İlk buluşma"></div>
+          <div class="box"><time>06.06.2024</time>Benim evimde su yoktu 1 aydır bu onun mutluluğu idi..</div>
+        </article>
+       
+                                                           <article class="story">
+          <div class="img"><img src="https://pbs.twimg.com/media/G3Uvq1xXQAEec29?format=png&name=360x360" alt="İlk buluşma"></div>
+          <div class="box"><time>12.06.2024</time>Öpmek için yanyana mı olmak lazım illa..</div>
+        </article>
+       
       </div>
     </section>
 
+    <!-- Galeri -->
     <section id="galeri" class="card" aria-label="Galeri">
       <div class="hd"><div class="icon"><i class="fa-solid fa-image"></i></div><h3>Galeri</h3></div>
       <div class="bd">
@@ -209,25 +332,86 @@
   </main>
 
   <script>
-    /* ==== INTRO: kalpler düşer, altta ‘pool’ birikir, alıntı + buton görünür ==== */
+    /* ==== ARKA PLAN MÜZİĞİ: Otomatik başlat + kısıt durumunda dokununca aç ==== */
+    const bgm = document.getElementById('bgm');
+    const playerBar = document.getElementById('playerBar');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const muteBtn = document.getElementById('muteBtn');
+    const tapUnmute = document.getElementById('tapUnmute');
+    const playerTitle = document.getElementById('playerTitle');
+
+    // Olası iOS/Android kısıtları için: önce dene, engellenirse kullanıcıdan tek dokunuş iste
+    async function tryAutoplay() {
+      try {
+        bgm.volume = 1.0;
+        await bgm.play(); // doğrudan sesli dene
+        hideTapUnmute();
+      } catch (e1) {
+        // Sesli autoplay engellendiyse, muted olarak başlatmayı dene
+        try {
+          bgm.muted = true;
+          await bgm.play();
+          showTapUnmute(); // kullanıcıdan tek dokunuşla sesi açmasını iste
+        } catch (e2) {
+          // Çok katı tarayıcı: ilk etkileşimi bekle
+          showTapUnmute();
+        }
+      }
+    }
+    function showTapUnmute(){ tapUnmute.classList.add('show'); }
+    function hideTapUnmute(){ tapUnmute.classList.remove('show'); }
+
+    // İlk etkileşimde sesi aç
+    function userUnlockAudio(){
+      if (bgm.paused) bgm.play().catch(()=>{});
+      bgm.muted = false;
+      hideTapUnmute();
+      window.removeEventListener('pointerdown', userUnlockAudio);
+      window.removeEventListener('keydown', userUnlockAudio);
+      window.removeEventListener('touchstart', userUnlockAudio);
+    }
+    window.addEventListener('pointerdown', userUnlockAudio, { once:true });
+    window.addEventListener('keydown', userUnlockAudio, { once:true });
+    window.addEventListener('touchstart', userUnlockAudio, { once:true });
+
+    // Kontroller
+    toggleBtn.addEventListener('click', ()=>{
+      if (bgm.paused) { bgm.play().catch(()=>{}); toggleBtn.innerHTML='<i class="fa-solid fa-pause"></i>'; }
+      else { bgm.pause(); toggleBtn.innerHTML='<i class="fa-solid fa-play"></i>'; }
+    });
+    muteBtn.addEventListener('click', ()=>{
+      bgm.muted = !bgm.muted;
+      muteBtn.innerHTML = bgm.muted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
+      if (!bgm.paused) hideTapUnmute();
+    });
+    bgm.addEventListener('play', ()=>{ toggleBtn.innerHTML='<i class="fa-solid fa-pause"></i>'; });
+    bgm.addEventListener('pause', ()=>{ toggleBtn.innerHTML='<i class="fa-solid fa-play"></i>'; });
+
+    // Sayfa yüklenince hemen dener
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', tryAutoplay);
+    } else {
+      tryAutoplay();
+    }
+
+    /* ==== INTRO: kalpler düşer, altta ‘pool’ birikir, alıntı belirir ==== */
     (function(){
-      const intro = document.getElementById('intro');
-      const pool = document.getElementById('pool');
-      const quote = document.getElementById('quote');
-      const enterWrap = document.getElementById('enterWrap');
+      const intro=document.getElementById('intro');
+      const pool=document.getElementById('pool');
+      const quote=document.getElementById('quote');
 
       const N=70;
       let pooled = 0;
       const step = 100 / (N/1.8);
 
-      for (let i=0; i< N; i++){
-        const s = document.createElement('i');
-        s.className = 'fa-solid fa-heart heart';
-        s.style.left = (Math.random()*100)+'vw';
-        const dur = 3.2 + Math.random()*3.2;
-        s.style.animationDuration = dur+'s';
-        s.style.animationDelay = (Math.random()*0.9)+'s';
-        s.addEventListener('animationend', ()=>{
+      for(let i=0;i<N;i++){
+        const s=document.createElement('i');
+        s.className='fa-solid fa-heart heart';
+        s.style.left=(Math.random()*100)+'vw';
+        const dur=3.2+Math.random()*3.2;
+        s.style.animationDuration=dur+'s';
+        s.style.animationDelay=(Math.random()*0.9)+'s';
+        s.addEventListener('animationend',()=>{
           pooled = Math.min(100, pooled + step);
           pool.style.height = pooled + 'vh';
           s.remove();
@@ -237,7 +421,7 @@
 
       function fitQuoteToWidth(el, maxPx=44, minPx=14, step=1){
         el.style.fontSize = maxPx+'px';
-        const maxWidth = Math.min(el.parentElement.clientWidth, window.innerWidth)*0.92;
+        const maxWidth = Math.min(el.parentElement.clientWidth, window.innerWidth) * 0.92;
         let size = maxPx;
         const prevOpacity = el.style.opacity;
         el.style.opacity = 0;
@@ -250,73 +434,76 @@
         el.style.opacity = prevOpacity;
       }
 
-      setTimeout(()=>{
-        fitQuoteToWidth(quote);
-        quote.style.opacity = '1';
-        enterWrap.classList.add('show');
-      }, 4800);
-
+      setTimeout(()=>{ fitQuoteToWidth(quote); quote.style.opacity='1'; }, 4800);
       window.addEventListener('resize', ()=>fitQuoteToWidth(quote));
+
+      setTimeout(()=>{
+        intro.style.transition='opacity .9s';
+        intro.style.opacity='0';
+        setTimeout(()=>intro.remove(), 1000);
+      }, 7200);
     })();
 
-    /* ==== Menü açıp kapatma ==== */
-    const openMenu = document.getElementById('openMenu');
-    const sideMenu = document.getElementById('sideMenu');
-    const menuOv = document.getElementById('menuOverlay');
-    openMenu.addEventListener('click', ()=>{ sideMenu.classList.add('active'); menuOv.classList.add('active'); });
-    menuOv.addEventListener('click', ()=>{ sideMenu.classList.remove('active'); menuOv.classList.remove('active'); });
+    /* ==== Menü aç/kapat ==== */
+    const openMenu=document.getElementById('openMenu');
+    const sideMenu=document.getElementById('sideMenu');
+    const menuOv=document.getElementById('menuOverlay');
+    const openSideMenu=()=>{ sideMenu.classList.add('active'); menuOv.classList.add('active'); };
+    const closeSideMenu=()=>{ sideMenu.classList.remove('active'); menuOv.classList.remove('active'); };
+    openMenu.addEventListener('click',openSideMenu);
+    menuOv.addEventListener('click',closeSideMenu);
 
     /* ==== Sayaç ==== */
     const startFixed = new Date('2024-01-01T00:00:00');
-    const dEl = document.getElementById('days'), hEl = document.getElementById('hours'),
-          mEl = document.getElementById('mins'), sEl = document.getElementById('secs');
+    const dEl=document.getElementById('days');
+    const hEl=document.getElementById('hours');
+    const mEl=document.getElementById('mins');
+    const sEl=document.getElementById('secs');
     function tick(){
       const diff = Date.now() - startFixed.getTime();
-      const d = Math.max(0, Math.floor(diff/86400000));
-      const h = Math.max(0, Math.floor((diff%86400000)/3600000));
-      const m = Math.max(0, Math.floor((diff%3600000)/60000));
-      const s = Math.max(0, Math.floor((diff%60000)/1000));
-      dEl.textContent = d; hEl.textContent = h; mEl.textContent = m; sEl.textContent = s;
+      const d=Math.max(0, Math.floor(diff/86400000));
+      const h=Math.max(0, Math.floor((diff%86400000)/3600000));
+      const m=Math.max(0, Math.floor((diff%3600000)/60000));
+      const s=Math.max(0, Math.floor((diff%60000)/1000));
+      dEl.textContent=d; hEl.textContent=h; mEl.textContent=m; sEl.textContent=s;
     }
-    tick(); setInterval(tick, 1000);
+    tick(); setInterval(tick,1000);
 
-    /* ==== SLIDER ==== */
+    /* ==== SLIDER (otomatik + nokta) ==== */
     const slidesEl = document.getElementById('slides');
     const dotsWrap = document.getElementById('dots');
     let idx = 0;
     const slideCount = slidesEl.children.length;
     const AUTO_MS = 4000;
     function buildDots(){
-      dotsWrap.innerHTML = '';
-      for (let i=0; i<slideCount; i++){
-        const d = document.createElement('div');
-        d.className = 'dot'+(i===0?' active':'');
-        d.addEventListener('click', ()=>goTo(i, true));
+      dotsWrap.innerHTML='';
+      for(let i=0;i<slideCount;i++){
+        const d=document.createElement('div');
+        d.className='dot'+(i===0?' active':'');
+        d.addEventListener('click',()=>goTo(i,true));
         dotsWrap.appendChild(d);
       }
     }
     function updateUI(){
       slidesEl.style.transform = `translateX(-${idx*100}%)`;
-      [...dotsWrap.children].forEach((el,i)=>el.classList.toggle('active', i===idx));
+      [...dotsWrap.children].forEach((el,i)=>el.classList.toggle('active',i===idx));
     }
     function goTo(i, stopAuto=false){
       idx = (i+slideCount)%slideCount;
       updateUI();
-      if(stopAuto) restartAuto();
+      if(stopAuto){ restartAuto(); }
     }
     function next(){ goTo(idx+1); }
-    let autoTimer = null;
-    function startAuto(){ if(autoTimer) return; autoTimer = setInterval(next, AUTO_MS); }
-    function stopAuto(){ clearInterval(autoTimer); autoTimer = null; }
+    let autoTimer=null;
+    function startAuto(){ if(autoTimer) return; autoTimer=setInterval(next, AUTO_MS); }
+    function stopAuto(){ clearInterval(autoTimer); autoTimer=null; }
     function restartAuto(){ stopAuto(); startAuto(); }
     buildDots(); updateUI(); startAuto();
-    document.addEventListener('visibilitychange', ()=>{
-      document.hidden ? stopAuto() : startAuto();
-    });
+    window.addEventListener('visibilitychange', ()=>{ document.hidden ? stopAuto() : startAuto(); });
 
     /* ==== Galeri ==== */
-    const gallery = document.getElementById('gallery');
-    const gallerySources = [
+    const gallery=document.getElementById('gallery');
+    const gallerySources=[
       'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop',
       'https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop',
       'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=1200&auto=format&fit=crop',
@@ -326,144 +513,41 @@
       'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=1200&auto=format&fit=crop'
     ].slice(0,21);
     gallerySources.forEach(src=>{
-      const im = new Image();
-      im.src = src; im.alt = 'Anı'; im.className = 'gthumb';
+      const im=new Image();
+      im.src=src; im.alt='Anı'; im.className='gthumb';
       gallery.appendChild(im);
     });
-    const lbBg = document.createElement('div');
-    lbBg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;z-index:1450';
+    const lbBg=document.createElement('div');
+    lbBg.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;z-index:1450';
     document.body.appendChild(lbBg);
-    let activeClone = null, activeRect = null;
+    let activeClone=null, activeRect=null;
     function openLightbox(img){
-      const r = img.getBoundingClientRect();
-      activeRect = r;
-      const c = img.cloneNode();
-      c.style.cssText = `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;object-fit:cover;border-radius:10px;z-index:1460;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:all .28s ease`;
-      document.body.appendChild(c); activeClone = c; lbBg.style.display = 'block';
+      const r=img.getBoundingClientRect();
+      activeRect=r;
+      const c=img.cloneNode();
+      c.style.cssText=`position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;object-fit:cover;border-radius:10px;z-index:1460;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:all .28s ease`;
+      document.body.appendChild(c); activeClone=c; lbBg.style.display='block';
       requestAnimationFrame(()=>{
-        const vw = innerWidth, vh = innerHeight;
-        const size = Math.min(vw * 0.9, vh * 0.9);
-        c.style.left = (vw/2 - size/2) + 'px';
-        c.style.top = (vh/2 - size/2) + 'px';
-        c.style.width = size + 'px';
-        c.style.height = size + 'px';
+        const vw=innerWidth, vh=innerHeight;
+        const size=Math.min(vw*0.9, vh*0.9);
+        c.style.left=(vw/2-size/2)+'px';
+        c.style.top=(vh/2-size/2)+'px';
+        c.style.width=size+'px';
+        c.style.height=size+'px';
       });
     }
     function closeLightbox(){
-      if(!activeClone || !activeRect){ lbBg.style.display = 'none'; return; }
-      const c = activeClone, r = activeRect;
-      c.style.left = r.left + 'px';
-      c.style.top = r.top + 'px';
-      c.style.width = r.width + 'px';
-      c.style.height = r.height + 'px';
-      setTimeout(()=>{ c.remove(); activeClone = null; activeRect = null; },280);
-      lbBg.style.display = 'none';
+      if(!activeClone||!activeRect){ lbBg.style.display='none'; return; }
+      const c=activeClone, r=activeRect;
+      c.style.left=r.left+'px'; c.style.top=r.top+'px';
+      c.style.width=r.width+'px'; c.style.height=r.height+'px';
+      setTimeout(()=>{ c.remove(); activeClone=null; activeRect=null; },280);
+      lbBg.style.display='none';
     }
-    document.getElementById('gallery').addEventListener('click', e=>{
+    document.getElementById('gallery').addEventListener('click',e=>{
       if(e.target.classList.contains('gthumb')) openLightbox(e.target);
     });
-    lbBg.addEventListener('click', closeLightbox);
-
-    /* ====== YouTube Iframe Player ====== */
-    let ytPlayer = null, isReady = false;
-    const playerBarEl = document.getElementById('playerBar');
-    const toggleBtn = document.getElementById('toggleBtn');
-    const muteBtn = document.getElementById('muteBtn');
-    const playerTitle = document.getElementById('playerTitle');
-    let pendingPlay = null;
-
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    document.body.appendChild(tag);
-
-    window.onYouTubeIframeAPIReady = function(){
-      ytPlayer = new YT.Player('yt-holder', {
-        height: '1', width: '1', videoId: '',
-        playerVars: { 'playsinline': 1 },
-        events: {
-          'onReady': () => {
-            isReady = true;
-            if(pendingPlay){
-              pendingPlay();
-              pendingPlay = null;
-            }
-          },
-          'onStateChange': (e) => {
-            if(e.data === YT.PlayerState.PLAYING){
-              toggleBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-            }
-            if(e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED){
-              toggleBtn.innerHTML = '<i class="fa-solid fa-play"></i>';
-            }
-          }
-        }
-      });
-    };
-
-    function playSong(id, title = 'Parça'){
-      if(!isReady){
-        // henüz hazır değilse beklet
-        pendingPlay = () => playSong(id, title);
-        return;
-      }
-      ytPlayer.cueVideoById(id);
-      ytPlayer.playVideo();
-      playerTitle.textContent = title;
-      playerBarEl.style.display = 'flex';
-      toggleBtn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-    }
-
-    toggleBtn.addEventListener('click', ()=>{
-      if(!ytPlayer) return;
-      const st = ytPlayer.getPlayerState();
-      if(st === YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
-      else ytPlayer.playVideo();
-    });
-
-    muteBtn.addEventListener('click', ()=>{
-      if(!ytPlayer) return;
-      if(ytPlayer.isMuted()){
-        ytPlayer.unMute();
-        muteBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
-      } else {
-        ytPlayer.mute();
-        muteBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
-      }
-    });
-
-    document.querySelectorAll('.play-link').forEach(a=>{
-      a.addEventListener('click', e=>{
-        e.preventDefault();
-        const id = a.getAttribute('data-yt');
-        const title = a.parentElement.querySelector('span')?.textContent?.trim() || 'Parça';
-        playSong(id, title);
-        sideMenu.classList.remove('active');
-        menuOv.classList.remove('active');
-      });
-    });
-
-    const enterBtn = document.getElementById('enterBtn');
-    function closeIntro(){
-      const intro = document.getElementById('intro');
-      intro.style.transition = 'opacity .9s';
-      intro.style.opacity = '0';
-      setTimeout(()=>intro.remove(), 950);
-      window.scrollTo({top:0, behavior:'smooth'});
-    }
-    function enterSite(){
-      const FIRST_ID = 'J7iln6HbIW4';
-      const FIRST_TITLE = 'Şarkı 1';
-      if(isReady){
-        playSong(FIRST_ID, FIRST_TITLE);
-        closeIntro();
-      } else {
-        pendingPlay = () => {
-          playSong(FIRST_ID, FIRST_TITLE);
-          closeIntro();
-        };
-      }
-    }
-    enterBtn.addEventListener('click', enterSite);
+    lbBg.addEventListener('click',closeLightbox);
   </script>
 </body>
 </html>
