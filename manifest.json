@@ -1,7 +1,7 @@
 {
   "name": "Sıla ♥ Kaan – Bizim Sayfamız",
   "short_name": "Sıla ♥ Kaan",
-  "start_url": "/seniseviyorum.html",
+  "start_url": "./seniseviyorum.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#d61f2b",
