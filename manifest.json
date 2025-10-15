@@ -1,0 +1,22 @@
+{
+  "name": "Sıla ♥ Kaan – Bizim Sayfamız",
+  "short_name": "Sıla ♥ Kaan",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#d61f2b",
+  "icons": [
+    {
+      "src": "https://pbs.twimg.com/media/G3VH-Y8WcAMIhwZ?format=png&name=small",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://pbs.twimg.com/media/G3VH-Y8WcAMIhwZ?format=png&name=small",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
